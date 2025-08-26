@@ -68,6 +68,23 @@ class User {
     return await bcrypt.compare(password, hashedPassword);
   }
 
+  // Actualizar contraseña
+  static async updatePassword(id, newPassword) {
+    try {
+      // Hashear la nueva contraseña
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      
+      const [result] = await pool.execute(
+        'UPDATE usuarios SET password = ? WHERE id = ?',
+        [hashedPassword, id]
+      );
+      
+      return result.affectedRows > 0;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // Obtener todos los usuarios (sin contraseñas)
   static async findAll() {
     try {

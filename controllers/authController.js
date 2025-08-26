@@ -130,6 +130,128 @@ class AuthController {
     }
   }
 
+  // Recuperación de contraseña
+  static async forgotPassword(req, res) {
+    try {
+      const { email } = req.body;
+
+      // Validar que se proporcione el email
+      if (!email) {
+        return res.status(400).json({
+          message: 'El email es requerido',
+          error: 'MISSING_EMAIL'
+        });
+      }
+
+      // Buscar usuario por email
+      const user = await User.findByEmail(email);
+      if (!user) {
+        // Por seguridad, no revelar si el email existe o no
+        return res.json({
+          message: 'Si el email existe en nuestro sistema, recibirás instrucciones para recuperar tu contraseña',
+          success: true
+        });
+      }
+
+      // Generar token temporal para recuperación (expira en 1 hora)
+      const resetToken = jwt.sign(
+        { userId: user.id, email: user.email, type: 'password_reset' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+
+      // En un entorno real, aquí enviarías un email con el token
+      // Por ahora, simulamos el envío exitoso
+      console.log(`Token de recuperación para ${email}: ${resetToken}`);
+
+      res.json({
+        message: 'Si el email existe en nuestro sistema, recibirás instrucciones para recuperar tu contraseña',
+        success: true,
+        // En producción, NO incluir el token en la respuesta
+        // resetToken: resetToken // Solo para desarrollo
+      });
+
+    } catch (error) {
+      console.error('Error en recuperación de contraseña:', error);
+      res.status(500).json({
+        message: 'Error interno del servidor',
+        error: 'INTERNAL_ERROR'
+      });
+    }
+  }
+
+  // Reset de contraseña usando token
+  static async resetPassword(req, res) {
+    try {
+      const { token, newPassword } = req.body;
+
+      // Validaciones básicas
+      if (!token || !newPassword) {
+        return res.status(400).json({
+          message: 'Token y nueva contraseña son requeridos',
+          error: 'MISSING_FIELDS'
+        });
+      }
+
+      if (newPassword.length < 6) {
+        return res.status(400).json({
+          message: 'La nueva contraseña debe tener al menos 6 caracteres',
+          error: 'PASSWORD_TOO_SHORT'
+        });
+      }
+
+      // Verificar el token
+      let decoded;
+      try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+      } catch (error) {
+        return res.status(400).json({
+          message: 'Token inválido o expirado',
+          error: 'INVALID_TOKEN'
+        });
+      }
+
+      // Verificar que el token sea de tipo password_reset
+      if (decoded.type !== 'password_reset') {
+        return res.status(400).json({
+          message: 'Token inválido para reset de contraseña',
+          error: 'INVALID_TOKEN_TYPE'
+        });
+      }
+
+      // Buscar el usuario
+      const user = await User.findById(decoded.userId);
+      if (!user) {
+        return res.status(404).json({
+          message: 'Usuario no encontrado',
+          error: 'USER_NOT_FOUND'
+        });
+      }
+
+      // Actualizar la contraseña
+      const success = await User.updatePassword(decoded.userId, newPassword);
+      
+      if (!success) {
+        return res.status(500).json({
+          message: 'Error al actualizar la contraseña',
+          error: 'UPDATE_FAILED'
+        });
+      }
+
+      res.json({
+        message: 'Contraseña actualizada exitosamente',
+        success: true
+      });
+
+    } catch (error) {
+      console.error('Error en reset de contraseña:', error);
+      res.status(500).json({
+        message: 'Error interno del servidor',
+        error: 'INTERNAL_ERROR'
+      });
+    }
+  }
+
   // Obtener perfil del usuario autenticado
   static async getProfile(req, res) {
     try {
