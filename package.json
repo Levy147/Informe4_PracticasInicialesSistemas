@@ -2,8 +2,10 @@
   "name": "proyect-web",
   "version": "1.0.0",
   "description": "Este es un proyecto web creado con Git y GitHub.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,5 +26,8 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
   }
 }
