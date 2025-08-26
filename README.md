@@ -167,7 +167,3 @@ El sistema incluye las siguientes tablas:
 ## 📝 Licencia
 
 Este proyecto está bajo la Licencia MIT.
-
-## 👨‍💻 Autor
-
-Levy147 - Actividad No.4
