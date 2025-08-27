@@ -297,6 +297,7 @@ curl http://localhost:3000/
 
 ## 📝 Licencia
 
+<<<<<<< HEAD
 Este proyecto está bajo la Licencia MIT - ver archivo LICENSE para detalles.
 
 ## 👨‍💻 Autor
@@ -307,3 +308,6 @@ Este proyecto está bajo la Licencia MIT - ver archivo LICENSE para detalles.
 ---
 
 > **📌 Resumen:** Backend completo con autenticación JWT, sistema de publicaciones, comentarios, filtros avanzados y base de datos MySQL optimizada. Listo para integración con frontend.
+=======
+Este proyecto está bajo la Licencia MIT.
+>>>>>>> e4f819d594a9f12006db5fc85fd9656deb3c910c
