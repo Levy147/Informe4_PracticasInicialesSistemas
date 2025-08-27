@@ -1,0 +1,12 @@
+[33mc46f254[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Creacion de los endpoints de publicaciones
+[33m32f053a[m Descripción:
+[33m0adafb2[m configuracion de servidor en node.js
+[33m5ecb5a6[m quitar archivos erroneos
+[33mf41099c[m Merge branch 'main' of https://github.com/Levy147/Informe4_PracticasInicialesSistemas
+[33mf7db94d[m npm -y
+[33md39ea44[m Add files via upload
+[33md270585[m npm -y
+[33mce3d92c[m Delete eV1.sql
+[33me98594f[m Carga de datos ficticios a las tablas de la base de datos
+[33m68d2b08[m Agregar script SQL para crear base de datos del sistema educativo
+[33md174bd6[m first commit
