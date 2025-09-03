@@ -31,7 +31,13 @@ Este es un proyecto **BACKEND** completo para un sistema educativo que permite a
 - **🗄️ Base de Datos MySQL Optimizada**
   - Estructura relacional bien diseñada
   - Índices para consultas rápidas
-  - Datos de prueba incluidos
+  - Datos reales de cursos y profesores cargados desde CSV
+
+- **🧪 Sistema de Testing Completo**
+  - 50+ tests automatizados con Jest
+  - Cobertura superior al 60% del código
+  - Tests unitarios y de integración
+  - Mocking completo de base de datos
 
 ## 📋 Requisitos Previos
 
@@ -54,16 +60,20 @@ npm install
 
 ### 3. Configurar variables de entorno
 ```bash
-# Copiar el archivo de ejemplo
-cp config.env.example .env
-
-# Editar .env con tus configuraciones de MySQL
+# Crear archivo .env con la configuración necesaria
 ```
 
 ### 4. Configurar la base de datos
 1. Crear base de datos MySQL llamada `sistema_educativo`
 2. Ejecutar el script SQL completo: `DataBaseV1.sql`
-3. Los datos de prueba se cargarán automáticamente
+3. **Ver vista previa de los datos del CSV** (opcional):
+   ```bash
+   npm run preview-csv
+   ```
+4. **Cargar los datos reales** desde el archivo CSV:
+   ```bash
+   npm run load-real-csv
+   ```
 
 ### 5. Iniciar el servidor
 ```bash
@@ -117,7 +127,17 @@ BCRYPT_ROUNDS=10
 │   ├── auth.js              # 🛣️ Rutas de autenticación
 │   ├── posts.js             # 🛣️ Rutas de publicaciones
 │   └── users.js             # 🛣️ Rutas de usuarios
+├── __tests__/               # 🧪 Tests automatizados
+│   ├── setup.js             # Configuración global
+│   ├── auth.test.js         # Tests de autenticación
+│   ├── posts.test.js        # Tests de publicaciones
+│   ├── user.model.test.js   # Tests del modelo User
+│   └── auth.middleware.test.js # Tests del middleware
+├── scripts/                 # 📜 Scripts de utilidad
+│   ├── loadRealDataFromCSV.js # Carga de datos reales desde CSV
+│   └── previewCSVData.js    # Vista previa de datos del CSV
 ├── DataBaseV1.sql           # 🗄️ Script completo de BD
+├── encoded-profesores_cursos.csv # 📊 Datos reales de cursos y profesores
 ├── package.json             # 📦 Dependencias y scripts
 └── README.md               # 📖 Documentación
 ```
@@ -178,23 +198,95 @@ GET /api/posts?tipo=curso&curso_id=1&search=programacion&limit=10&offset=0
 }
 ```
 
+## 🧪 Sistema de Testing
+
+### ✅ Tests Implementados
+
+1. **Tests de Autenticación** (`auth.test.js`)
+   - Registro, login, recuperación de contraseña
+   - Validación de tokens JWT
+
+2. **Tests de Publicaciones** (`posts.test.js`)
+   - CRUD completo de publicaciones
+   - Filtros, búsquedas y comentarios
+
+3. **Tests del Modelo User** (`user.model.test.js`)
+   - Todas las operaciones del modelo
+   - Validación de datos y contraseñas
+
+4. **Tests del Middleware** (`auth.middleware.test.js`)
+   - Validación de autenticación
+   - Manejo de errores
+
+### 🚀 Comandos de Testing
+
+```bash
+# Ejecutar todos los tests
+npm test
+
+# Ejecutar tests en modo watch (se re-ejecutan automáticamente)
+npm run test:watch
+
+# Ejecutar tests con reporte de cobertura
+npm run test:coverage
+```
+
+### 📊 Cobertura de Código
+
+```
+File                 | % Stmts | % Branch | % Funcs | % Lines
+---------------------|---------|----------|---------|--------
+Middlewares          |    100% |     100% |    100% |    100%
+Routes (auth/posts)  |    100% |     100% |    100% |    100%
+User Model           |   82.5% |    83.3% |    100% |   82.5%
+Controllers          |  ~64-74%|   73-91% |   72-83%|  ~64-74%
+```
+
 ## 🗄️ Base de Datos
 
 ### **Tablas Principales:**
 - **`usuarios`** - Gestión de estudiantes (carnet, nombres, email, password)
 - **`publicaciones`** - Posts sobre cursos/profesores con tipos y mensajes
 - **`comentarios`** - Sistema de comentarios en publicaciones
-- **`cursos`** - Catálogo de cursos (Programación, Bases de Datos, etc.)
-- **`profesores`** - Catálogo de profesores para filtros
+- **`cursos`** - Catálogo de cursos cargado desde CSV
+- **`profesores`** - Catálogo de profesores cargado desde CSV
 - **`cursos_aprobados`** - Historial académico de estudiantes
 
-### **Datos de Prueba Incluidos:**
-- ✅ **3 usuarios** de ejemplo
-- ✅ **15 cursos** del área de sistemas
-- ✅ **8 profesores** con títulos académicos
-- ✅ **5 publicaciones** de prueba
-- ✅ **7 comentarios** con interacciones
-- ✅ **Historial académico** de ejemplo
+### **Datos Reales Incluidos:**
+- ✅ **90 cursos** reales del área de sistemas cargados desde `encoded-profesores_cursos.csv`
+- ✅ **49 profesores únicos** con nombres y especialidades reales
+- ✅ **Usuarios** de ejemplo para pruebas  
+- ✅ **Publicaciones** de ejemplo con interacciones
+- ✅ **Códigos de curso** generados automáticamente (PROG, BD, ARQ, etc.)
+
+## 📋 Scripts Disponibles
+
+```bash
+# Desarrollo
+npm run dev                  # Servidor en modo desarrollo
+npm start                   # Servidor en modo producción
+
+# Base de datos  
+npm run preview-csv         # Vista previa de datos del CSV sin cargar
+npm run load-real-csv       # Cargar datos reales desde encoded-profesores_cursos.csv
+
+# Testing
+npm test                    # Ejecutar todos los tests
+npm run test:watch         # Tests en modo watch
+npm run test:coverage      # Tests con reporte de cobertura
+
+# Utilidades
+# nodemon se instala automáticamente como dependencia de desarrollo
+```
+
+## 🔒 Seguridad Implementada
+
+- **🔐 Autenticación JWT** con tokens seguros
+- **🛡️ Contraseñas hasheadas** con bcrypt (10 rounds)
+- **✅ Validación de datos** en todos los endpoints
+- **🔍 Sanitización SQL** con parámetros preparados
+- **⏰ Tokens de recuperación** con expiración (1 hora)
+- **🚫 Protección de rutas** sensibles con middleware
 
 ## 📋 Ejemplos de Uso
 
@@ -252,23 +344,6 @@ Content-Type: application/json
 GET /api/posts?search=programacion&tipo=curso&limit=5
 ```
 
-## 🔒 Seguridad Implementada
-
-- **🔐 Autenticación JWT** con tokens seguros
-- **🛡️ Contraseñas hasheadas** con bcrypt (10 rounds)
-- **✅ Validación de datos** en todos los endpoints
-- **🔍 Sanitización SQL** con parámetros preparados
-- **⏰ Tokens de recuperación** con expiración (1 hora)
-- **🚫 Protección de rutas** sensibles con middleware
-
-## 🚀 Siguiente Paso: Frontend
-
-Este backend está completamente funcional y listo para conectar con un frontend desarrollado en:
-- **React.js** + axios para requests
-- **Vue.js** + fetch API
-- **Angular** + HttpClient
-- **O cualquier framework** que consuma APIs REST
-
 ## 🔧 Desarrollo y Testing
 
 ```bash
@@ -291,13 +366,40 @@ curl http://localhost:3000/
   "bcryptjs": "Hash de contraseñas",
   "jsonwebtoken": "Autenticación JWT",
   "cors": "Habilitación de CORS",
-  "dotenv": "Variables de entorno"
+  "dotenv": "Variables de entorno",
+  "jest": "Framework de testing",
+  "supertest": "Testing de APIs HTTP"
 }
 ```
 
+## 🚀 Siguiente Paso: Frontend
+
+Este backend está completamente funcional y listo para conectar con un frontend desarrollado en:
+- **React.js** + axios para requests
+- **Vue.js** + fetch API
+- **Angular** + HttpClient
+- **O cualquier framework** que consuma APIs REST
+
+## 🆘 Solución de Problemas
+
+### Error: "Cannot find module"
+```bash
+npm install  # Reinstalar dependencias
+```
+
+### Tests fallan por timeout
+Incrementar timeout en Jest:
+```javascript
+jest.setTimeout(10000);
+```
+
+### Problemas con la base de datos
+1. Verificar que MySQL esté ejecutándose
+2. Verificar credenciales en archivo `.env`
+3. Ejecutar script de base de datos: `DataBaseV1.sql`
+
 ## 📝 Licencia
 
-<<<<<<< HEAD
 Este proyecto está bajo la Licencia MIT - ver archivo LICENSE para detalles.
 
 ## 👨‍💻 Autor
@@ -307,7 +409,4 @@ Este proyecto está bajo la Licencia MIT - ver archivo LICENSE para detalles.
 
 ---
 
-> **📌 Resumen:** Backend completo con autenticación JWT, sistema de publicaciones, comentarios, filtros avanzados y base de datos MySQL optimizada. Listo para integración con frontend.
-=======
-Este proyecto está bajo la Licencia MIT.
->>>>>>> e4f819d594a9f12006db5fc85fd9656deb3c910c
+> **📌 Resumen:** Backend completo con autenticación JWT, sistema de publicaciones, comentarios, filtros avanzados, base de datos MySQL optimizada con datos reales, y sistema de testing robusto. Listo para integración con frontend.
