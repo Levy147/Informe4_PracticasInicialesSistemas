@@ -172,8 +172,8 @@ async function loadRealDataFromCSV() {
       
       try {
         const [result] = await connection.execute(
-          'INSERT INTO profesores (nombres, apellidos, email, titulo, activo) VALUES (?, ?, ?, ?, ?)',
-          [nombres, apellidos, email, titulo, 1]
+          'INSERT INTO profesores (nombres, apellidos, titulo) VALUES (?, ?, ?)',
+          [nombres, apellidos, titulo]
         );
         
         profesoresInsertados.push({
@@ -194,8 +194,8 @@ async function loadRealDataFromCSV() {
     for (const curso of cursosData) {
       try {
         await connection.execute(
-          'INSERT INTO cursos (nombre, codigo, creditos, semestre, descripcion, activo) VALUES (?, ?, ?, ?, ?, ?)',
-          [curso.nombre, curso.codigo, curso.creditos, curso.semestre, curso.descripcion, 1]
+          'INSERT INTO cursos (nombre, codigo, seccion) VALUES (?, ?, ?)',
+          [curso.nombre, curso.codigo, curso.seccion]
         );
         cursosInsertados++;
       } catch (error) {
